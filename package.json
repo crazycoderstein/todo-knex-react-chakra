@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deps": "yarn && (cd web && yarn) && (cd api && yarn)",
+    "deps": "(npm i) && (cd web && npm i) && (cd .. && cd api && npm i)",
     "api": "cd api && nodemon",
-    "web": "cd web && yarn start",
-    "start": "concurrently --kill-others-on-fail \"yarn api\" \"yarn web\""
+    "web": "cd web && npm start",
+    "start": "concurrently --kill-others-on-fail \"npm run api\" \"npm run web\""
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
