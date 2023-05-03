@@ -1,24 +1,27 @@
 import React, { useState } from 'react'
 import {
 	Stack,
-	Divider,
 	Checkbox,
 	Editable,
 	EditableInput,
 	EditablePreview,
 	Input,
+	Box
 } from '@chakra-ui/react'
-import { CloseIcon } from '@chakra-ui/icons'
+import { DragHandleIcon } from '@chakra-ui/icons'
 import { tTask } from '../TodoList'
+import { DraggableProvided } from 'react-beautiful-dnd'
 
 type Props = {
+	id?: number,
 	data: tTask;
 	setDeleted: React.Dispatch<React.SetStateAction<boolean>>;
 	deleted: boolean;
+	provided: DraggableProvided
 };
 
 function Task(props: Props) {
-	const { data, setDeleted, deleted } = props
+	const { data, setDeleted, deleted, provided } = props
 	const [check, setCheck] = useState(data.completed)
 	const [name, setName] = useState<string>(data.name)
 	const textStyle = check ? 'del' : undefined
@@ -61,7 +64,7 @@ function Task(props: Props) {
 	}
 
 	return (
-		<div>
+		<Box borderColor="rgb(100, 116, 139)" borderWidth='1px' borderRadius="1rem" borderTop={'none'} >
 			<Stack
 				direction="row"
 				w="max-content"
@@ -91,8 +94,8 @@ function Task(props: Props) {
 						<Input as={EditableInput} />
 					</Editable>
 				</Stack>
-				<div>
-					<CloseIcon
+				<div {...provided.dragHandleProps}>
+					<DragHandleIcon
 						onClick={handleDelete}
 						w={3}
 						h={3}
@@ -101,8 +104,7 @@ function Task(props: Props) {
 					/>
 				</div>
 			</Stack>
-			<Divider />
-		</div>
+		</Box>
 	)
 }
 

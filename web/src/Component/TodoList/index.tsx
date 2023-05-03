@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Task from '../Task'
 import './index.css'
-import { IconButton, Input, Stack } from '@chakra-ui/react'
+import { IconButton, Input, Stack, Box, VStack} from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
+import { DragDropContext, Draggable, DropResult, Droppable, DraggableProvidedDragHandleProps } from 'react-beautiful-dnd'
+import { reorder, getItemStyle} from '../../helper'
 
 export type tTask = {
 	id?: number;
 	name: string;
 	completed: boolean;
+	sort: number;
 };
 
 const TodoList = () => {
@@ -19,8 +22,28 @@ const TodoList = () => {
 		return fetch('http://localhost:5000/tasks')
 			.then((res) => res.json())
 			.then((res) => {
-				setTodos(res.tasks)
+				const data: tTask[] = res.tasks
+				data.sort(function (a: tTask, b:tTask) { 
+					if ( a.sort > b.sort) return 1
+					if( a.sort < b.sort) return -1
+					return 0
+				})
+				setTodos(data)
 			})
+	}
+
+	useEffect(() => {
+		postTasks()
+	}, [todos])
+
+	const postTasks = async () => {
+		await fetch('http://localhost:5000/AllTasks', {
+			method: 'POST',
+			body: JSON.stringify(todos),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8',
+			},
+		})
 	}
 
 	useEffect(() => {
@@ -40,6 +63,26 @@ const TodoList = () => {
 		getTasks()
 	}
 
+	const onDragEnd = (result: DropResult) => {
+		if (!result.destination) {
+			return
+		}
+		const items: tTask[] = reorder(
+			todos,
+			result.source.index,
+			result.destination.index
+		)
+		const newItems = items.map((item, index) => {
+			return {
+				id: item.id,
+				name: item.name,
+				completed: item.completed,
+				sort: index
+			}
+		})
+		setTodos(newItems)
+	}
+	
 	return (
 		<div className="todo-list custom-font">
 			<div>
@@ -51,6 +94,9 @@ const TodoList = () => {
 						onChange={(e) => {
 							setName(e.target.value)
 						}}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') handleCreate()
+						}}
 					/>
 					<IconButton
 						colorScheme="blue"
@@ -59,18 +105,54 @@ const TodoList = () => {
 						onClick={handleCreate}
 					/>
 				</Stack>
-				<div>
-					{todos.map((item) => {
-						return (
-							<Task
-								data={item}
-								key={item.id}
-								setDeleted={setDeleted}
-								deleted={deleted}
-							/>
-						)
-					})}
-				</div>
+				<Box>
+					<DragDropContext onDragEnd={(e) => onDragEnd(e)}>
+						<Droppable droppableId="droppable">
+							{(provided) => (
+								<VStack
+									{...provided.droppableProps}
+									ref={provided.innerRef}
+									borderTopRadius={6}
+									bg="transparent"
+									alignItems="flex-start"
+									spacing={0}
+									overflow="hidden"
+								>
+									{todos.length > 0  && todos.map((todo, index) => {
+										return <Draggable
+											key={todo.id}
+											draggableId={todo.id + ''}
+											index={index}
+										>
+											{(provided, snapshot) => (
+												<Box
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													// {...provided.dragHandleProps}
+													style={getItemStyle(
+														snapshot.isDragging,
+														provided.draggableProps.style
+													)}
+												>
+													<Task
+														data={todo}
+														id={todo.id}
+														key={todo.id}
+														setDeleted={setDeleted}
+														deleted={deleted}
+														provided={provided}
+													/>
+												</Box>
+											)}
+										</Draggable>
+									})}
+									{provided.placeholder}
+								</VStack>
+							)}
+							
+						</Droppable>
+					</DragDropContext>
+				</Box>
 			</div>
 		</div>
 	)

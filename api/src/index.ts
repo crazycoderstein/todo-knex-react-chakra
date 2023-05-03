@@ -2,6 +2,13 @@ import express from 'express'
 import cors from 'cors'
 import db from './models'
 
+type Todo = {
+	id? :number,
+	name: string,
+	completed: boolean,
+	sort: number
+}
+
 const app = express()
 const port = process.env.PORT || 5000
 
@@ -12,6 +19,16 @@ app.use(express.urlencoded({ extended: true }))
 app.get('/tasks', async (req, res) => {
 	const tasks = await db.taskRepo.find()
 	res.send({ tasks })
+})
+
+app.post('/AllTasks',async (req, res) => {
+	const todos: Todo[] = req.body
+	todos.map(async (todo: Todo) => {
+		await db.db('tasks')
+			.update({ sort: todo.sort })
+			.where({ id: todo.id })
+	})
+	res.send({addAll: true, message: 'ok'})
 })
 
 app.post('/tasks', async (req, res) => {

@@ -7,10 +7,12 @@ const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
 )
 
-root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
-)
+console.log('1')
 
+root.render(
+	<App />
+)
+console.log('2')
 reportWebVitals()
+
+console.log('3')
