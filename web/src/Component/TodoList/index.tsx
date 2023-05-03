@@ -46,7 +46,7 @@ const TodoList = () => {
 				<Stack direction="row" minW="35rem">
 					<Input
 						variant="flushed"
-						placeholder="Add todos here..."
+						placeholder="add your todos here..."
 						value={name}
 						onChange={(e) => {
 							setName(e.target.value)
