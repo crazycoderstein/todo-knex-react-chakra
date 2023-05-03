@@ -1,0 +1,17 @@
+{
+  "name": "fullstack-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "deps": "yarn && (cd web && yarn) && (cd api && yarn)",
+    "api": "cd api && nodemon",
+    "web": "cd web && yarn start",
+    "start": "concurrently --kill-others-on-fail \"yarn api\" \"yarn web\""
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.6",
+    "ts-node": "^10.9.1"
+  }
+}
