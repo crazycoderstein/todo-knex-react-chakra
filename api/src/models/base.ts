@@ -6,8 +6,4 @@ export class BaseRepo<T extends object> {
 		this.db = db
 		this.tableName = tableName
 	}
-
-	public async find() {
-		return await this.db(this.tableName).select<T>()
-	}
 }
