@@ -1,0 +1,7 @@
+.layout-style {
+  height: 100vh;
+  background-color: rgb(8 47 73);
+  overflow: auto;
+  padding-top: 15vh;
+  padding-bottom: 15vh;
+}

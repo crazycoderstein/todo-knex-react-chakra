@@ -1,12 +1,12 @@
-import express from 'express'
-import * as todos from '../controllers'
+import express from "express";
+import * as todos from "../controllers";
 
-const router = express.Router()
+const router = express.Router();
 
-router.route('/tasks').get(todos.getTasks).post(todos.createTask)
+router.route("/todos").get(todos.getTodos).post(todos.postTodos);
 
-router.route('/tasks/:id').put(todos.updateTask).delete(todos.deleteTask)
+router.route("/todos/:id").put(todos.updateTodo).delete(todos.deleteTodo);
 
-router.route('/AllTasks').post(todos.postAllTasks)
+router.route("/todo").post(todos.createTodo);
 
-export default router
+export default router;

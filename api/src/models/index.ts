@@ -1,5 +1,5 @@
 import knex from 'knex'
-import TaskRepo from './task'
+import TodoRepo from './todo'
 
 const db = knex({
 	client: 'sqlite3',
@@ -14,5 +14,5 @@ const db = knex({
 
 export default {
 	db,
-	taskRepo: new TaskRepo(db),
+	todoRepo: new TodoRepo(db),
 }
