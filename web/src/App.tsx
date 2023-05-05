@@ -5,7 +5,6 @@ import TodoList from './Component/TodoList'
 import Layout from './Component/Layout'
 
 function App() {
-	console.log(4)
 	return (
 		<ChakraProvider>
 			<Layout>

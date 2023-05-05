@@ -26,18 +26,21 @@ function Task(props: Props) {
 	const [name, setName] = useState<string>(data.name)
 	const textStyle = check ? 'del' : undefined
 
-	const handleUpdate = (flag: number) => {
-		fetch('http://localhost:5000/tasks', {
-			method: 'PUT',
-			body: JSON.stringify({
-				id: data.id,
-				name: name,
-				completed: (flag && !check) || (!flag && check),
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-			},
-		})
+	const handleUpdate = async (flag: number) => {
+		try {
+			await fetch('http://localhost:5000/tasks/' + data.id, {
+				method: 'PUT',
+				body: JSON.stringify({
+					name: name,
+					completed: (flag && !check) || (!flag && check),
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			})
+		} catch (err) {
+			console.log(err)
+		}
 	}
 
 	const handleCheck = () => {
@@ -45,18 +48,21 @@ function Task(props: Props) {
 		handleUpdate(1)
 	}
 
-	const handleDelete = () => {
-		fetch('http://localhost:5000/tasks', {
-			method: 'DELETE',
-			body: JSON.stringify({
-				id: data.id,
-				name: data.name,
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8',
-			},
-		})
-		setDeleted(!deleted)
+	const handleDelete = async () => {
+		try {
+			await fetch('http://localhost:5000/tasks/' + data.id, {
+				method: 'DELETE',
+				body: JSON.stringify({
+					name: data.name,
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			})
+			setDeleted(!deleted)
+		} catch(err) {
+			console.log(err)
+		}
 	}
 
 	const handleSubmit = () => {
@@ -64,7 +70,7 @@ function Task(props: Props) {
 	}
 
 	return (
-		<Box borderColor="rgb(100, 116, 139)" borderWidth='1px' borderRadius="1rem" borderTop={'none'} >
+		<Box borderColor="rgb(255, 255, 255)" borderWidth='1px' borderRadius="1rem" borderTop={'none'} >
 			<Stack
 				direction="row"
 				w="max-content"
